@@ -39,9 +39,7 @@ class TestEngineVerify:
 
     def test_search_receives_correct_tools(self, engine, strategy) -> None:
         engine._search_provider = MagicMock()
-        engine._search_provider.complete_with_tools.return_value = MagicMock(
-            tool_calls=[]
-        )
+        engine._search_provider.complete_with_tools.return_value = MagicMock(tool_calls=[])
         engine._search_provider.model = "test"
 
         engine.verify("test claim", strategy)
@@ -78,9 +76,7 @@ class TestEngineVerify:
 
 class TestEngineEmptyTools:
     def test_no_tool_calls_proceeds_to_judge(self, engine, strategy) -> None:
-        engine._search_provider.complete_with_tools.return_value = MagicMock(
-            tool_calls=[]
-        )
+        engine._search_provider.complete_with_tools.return_value = MagicMock(tool_calls=[])
         verdict = engine.verify("test", strategy)
         assert verdict is not None
         assert verdict.verdict == VerdictEnum.TRUE

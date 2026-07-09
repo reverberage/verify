@@ -127,8 +127,7 @@ class TestStrategyCrossDomain:
     def test_system_prompts_differ(self) -> None:
         """Each strategy should have distinct prompts."""
         prompts = {
-            name: (s.system_prompt_search, s.system_prompt_judge)
-            for name, s in REGISTRY.items()
+            name: (s.system_prompt_search, s.system_prompt_judge) for name, s in REGISTRY.items()
         }
         assert len(set(prompts.values())) == len(prompts)
 

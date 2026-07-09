@@ -59,8 +59,7 @@ def verify(
     strategy_obj = REGISTRY.get(strategy)
     if strategy_obj is None:
         raise ValueError(
-            f"Unknown strategy: {strategy!r}. "
-            f"Available: {', '.join(list_strategies())}"
+            f"Unknown strategy: {strategy!r}. Available: {', '.join(list_strategies())}"
         )
 
     provider = _resolve_provider()
@@ -90,9 +89,7 @@ def _resolve_provider():
 
     api_key = os.environ.get("DASHSCOPE_API_KEY")
     if not api_key:
-        raise ValueError(
-            "No provider available. Install n3rverberage or set DASHSCOPE_API_KEY."
-        )
+        raise ValueError("No provider available. Install n3rverberage or set DASHSCOPE_API_KEY.")
     from rvrb_verify._default_provider import _DefaultProvider
 
     return _DefaultProvider(api_key=api_key)

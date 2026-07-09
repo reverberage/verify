@@ -13,9 +13,7 @@ def mock_search_provider(mocker):
     provider = mocker.MagicMock()
     result = ToolResult(
         content="",
-        tool_calls=[
-            ToolCall(id="call_1", name="search_web", arguments={"q": "sky color"})
-        ],
+        tool_calls=[ToolCall(id="call_1", name="search_web", arguments={"q": "sky color"})],
     )
     provider.complete_with_tools.return_value = result
     provider.model = "qwen3-coder-plus"
