@@ -22,19 +22,16 @@ class ModelProvider(Protocol):
         messages: list[dict],
         tools: list[dict],
         **kwargs: Any,
-    ) -> ToolResult:
-        ...
+    ) -> ToolResult: ...
 
     def complete_structured(
         self,
         messages: list[dict],
         output_type: type,
         **kwargs: Any,
-    ) -> object:
-        ...
+    ) -> object: ...
 
-    def complete(self, messages: list[dict], **kwargs: Any) -> str:
-        ...
+    def complete(self, messages: list[dict], **kwargs: Any) -> str: ...
 
 
 class VerificationError(RuntimeError):
@@ -152,9 +149,7 @@ class VerificationEngine:
         # Execute all tool calls and build context
         fragments: list[str] = []
         for tool_call in result.tool_calls:
-            fragment = self._tool_gateway.execute(
-                tool_call.name, tool_call.arguments
-            )
+            fragment = self._tool_gateway.execute(tool_call.name, tool_call.arguments)
             fragments.append(fragment)
 
         return "\n---\n".join(fragments)

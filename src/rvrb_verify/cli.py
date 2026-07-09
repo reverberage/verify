@@ -18,9 +18,7 @@ app = typer.Typer(
 
 @app.command()
 def verify_command(
-    claim_text: str = typer.Argument(
-        ..., help="The claim to verify."
-    ),
+    claim_text: str = typer.Argument(..., help="The claim to verify."),
     strategy: str = typer.Option(
         "fact-check",
         "--strategy",
