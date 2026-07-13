@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 import os
-from unittest.mock import patch
 
 from rvrb_verify.provider import DEFAULT_BASE_URL, DEFAULT_MODEL, get_provider
 

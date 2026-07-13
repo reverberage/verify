@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from rvrb_verify.models import Evidence, Source, Verdict
-from rvrb_verify.provider import ModelProvider, get_provider, DEFAULT_MODEL, DEFAULT_BASE_URL
+from rvrb_verify.provider import DEFAULT_BASE_URL, DEFAULT_MODEL, ModelProvider, get_provider
 from rvrb_verify.tools import MockToolGateway, ToolGateway
 
 __all__ = [
