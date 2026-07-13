@@ -24,6 +24,17 @@ def verify_command(
         "--strategy",
         help="Verification strategy.",
     ),
+    model: str | None = typer.Option(
+        None,
+        "--model",
+        "-m",
+        help="Override model ID (e.g., qwen3-coder-plus, gpt-4).",
+    ),
+    provider: str | None = typer.Option(
+        None,
+        "--provider",
+        help="Provider name: qwen, openai, local.  Overrides N3RVERBERAGE_PROVIDER.",
+    ),
     json_output: bool = typer.Option(
         False,
         "--json",
@@ -32,7 +43,12 @@ def verify_command(
 ) -> None:
     """Verify a claim using LLM-powered analysis."""
     try:
-        verdict = verify(claim_text, strategy=strategy)
+        verdict = verify(
+            claim_text,
+            strategy=strategy,
+            model=model,
+            provider=provider,
+        )
     except ValueError as exc:
         _print_error(str(exc))
         raise typer.Exit(code=1) from exc

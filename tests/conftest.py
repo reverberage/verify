@@ -16,7 +16,7 @@ def mock_search_provider(mocker):
         tool_calls=[ToolCall(id="call_1", name="search_web", arguments={"q": "sky color"})],
     )
     provider.complete_with_tools.return_value = result
-    provider.model = "qwen3-coder-plus"
+    provider.model = "mock-search-model"
     return provider
 
 
@@ -32,7 +32,7 @@ def mock_judge_provider(mocker):
         confidence=0.95,
         summary="The sky appears blue due to Rayleigh scattering.",
     )
-    provider.model = "qwen3.7-plus"
+    provider.model = "mock-judge-model"
     return provider
 
 
@@ -58,7 +58,7 @@ def exhausted_search_provider(mocker):
     provider.complete_with_tools.side_effect = QuotaExhaustedError(
         model_id="qwen3-coder-plus",
         status_code=429,
-        body='{"code":"AllocationQuota.FreeTierOnly"}',
+        body='{"code":"QuotaExhausted"}',
     )
     return provider
 
@@ -72,7 +72,7 @@ def exhausted_judge_provider(mocker):
     provider.complete_structured.side_effect = QuotaExhaustedError(
         model_id="qwen3.7-plus",
         status_code=429,
-        body='{"code":"AllocationQuota.FreeTierOnly"}',
+        body='{"code":"QuotaExhausted"}',
     )
     return provider
 

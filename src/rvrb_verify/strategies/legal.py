@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import os
 from types import SimpleNamespace
 from typing import Any
 
@@ -57,6 +58,6 @@ legal_strategy = SimpleNamespace(
     tool_definitions=[SEARCH_STATUTES, SEARCH_CASE_LAW],
     verdict_schema=Verdict,
     thinking_config={"search": {}, "judge": {}},
-    model_search="qwen3-coder-plus",
-    model_judge="qwen3.7-plus",
+    model_search=os.environ.get("N3RVERBERAGE_VERIFY_SEARCH_MODEL", "qwen3-coder-plus"),
+    model_judge=os.environ.get("N3RVERBERAGE_VERIFY_JUDGE_MODEL", "qwen3.7-plus"),
 )
