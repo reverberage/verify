@@ -133,8 +133,7 @@ def _build_fallback_provider(provider_type: str, model: str) -> _GenericProvider
     provider_type = provider_type.strip().lower()
     if provider_type not in _PROVIDER_FALLBACKS:
         raise ValueError(
-            f"Unknown provider type: '{provider_type}'. "
-            f"Supported: {', '.join(_PROVIDER_FALLBACKS)}"
+            f"Unknown provider type: '{provider_type}'. Supported: {', '.join(_PROVIDER_FALLBACKS)}"
         )
 
     default_model, default_url, api_key_var = _PROVIDER_FALLBACKS[provider_type]
@@ -147,9 +146,7 @@ def _build_fallback_provider(provider_type: str, model: str) -> _GenericProvider
     if api_key_var:
         api_key = os.environ.get(api_key_var)
         if not api_key:
-            raise ValueError(
-                f"{api_key_var} is not set. Set it or install n3rverberage."
-            )
+            raise ValueError(f"{api_key_var} is not set. Set it or install n3rverberage.")
 
     return _GenericProvider(
         model=model or default_model,
