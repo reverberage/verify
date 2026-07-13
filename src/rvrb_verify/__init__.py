@@ -3,12 +3,17 @@
 from __future__ import annotations
 
 from rvrb_verify.models import Evidence, Source, Verdict
+from rvrb_verify.provider import DEFAULT_BASE_URL, DEFAULT_MODEL, ModelProvider, get_provider
 from rvrb_verify.tools import MockToolGateway, ToolGateway
 
 __all__ = [
     "Verdict",
     "Evidence",
     "Source",
+    "ModelProvider",
+    "get_provider",
+    "DEFAULT_MODEL",
+    "DEFAULT_BASE_URL",
     "MockToolGateway",
     "ToolGateway",
     "list_strategies",
@@ -29,8 +34,10 @@ def verify(
     claim_text: str,
     strategy: str = "fact-check",
     *,
-    search_provider=None,
-    judge_provider=None,
+    model: str | None = None,
+    provider: str | None = None,
+    search_provider: ModelProvider | None = None,
+    judge_provider: ModelProvider | None = None,
     tool_gateway: ToolGateway | None = None,
 ) -> Verdict:
     """Verify a claim using the given strategy.
@@ -41,9 +48,14 @@ def verify(
         The claim to verify.
     strategy : str
         Strategy name from ``list_strategies()``. Default: ``"fact-check"``.
+    model : str | None
+        Override model ID for both phases. Overrides strategy-level defaults.
+    provider : str | None
+        Provider name (qwen, openai, local).  Overrides
+        ``N3RVERBERAGE_PROVIDER`` env var.
     search_provider : ModelProvider | None
-        Provider for the search phase. If None, tries ``n3rverberage.providers``
-        as default, falling back to a basic Qwen/DashScope provider.
+        Provider for the search phase. If None, resolves from ``model`` and
+        ``provider`` params with the strategy's search model as fallback.
     judge_provider : ModelProvider | None
         Provider for the judge phase. Same fallback as search_provider.
     tool_gateway : ToolGateway | None
@@ -62,34 +74,18 @@ def verify(
             f"Unknown strategy: {strategy!r}. Available: {', '.join(list_strategies())}"
         )
 
-    provider = _resolve_provider()
+    # Resolve per-phase providers from strategy's model preferences
+    if search_provider is None:
+        search_model = model or getattr(strategy_obj, "model_search", None) or DEFAULT_MODEL
+        search_provider = get_provider(model=search_model, provider=provider)
 
-    sp = search_provider or provider
-    jp = judge_provider or provider
+    if judge_provider is None:
+        judge_model = model or getattr(strategy_obj, "model_judge", None) or DEFAULT_MODEL
+        judge_provider = get_provider(model=judge_model, provider=provider)
 
     engine = VerificationEngine(
-        search_provider=sp,
-        judge_provider=jp,
+        search_provider=search_provider,
+        judge_provider=judge_provider,
         tool_gateway=tool_gateway or MockToolGateway(),
     )
     return engine.verify(claim_text, strategy_obj)
-
-
-def _resolve_provider():
-    """Resolve a default provider, trying n3rverberage first."""
-    try:
-        from n3rverberage.providers import get_provider
-
-        return get_provider()
-    except ImportError:
-        pass
-
-    # Fallback: basic DashScope provider using openai client
-    import os
-
-    api_key = os.environ.get("DASHSCOPE_API_KEY")
-    if not api_key:
-        raise ValueError("No provider available. Install n3rverberage or set DASHSCOPE_API_KEY.")
-    from rvrb_verify._default_provider import _DefaultProvider
-
-    return _DefaultProvider(api_key=api_key)

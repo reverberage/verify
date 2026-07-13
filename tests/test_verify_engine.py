@@ -71,7 +71,7 @@ class TestEngineVerify:
 
     def test_verdict_has_model_used(self, engine, strategy) -> None:
         verdict = engine.verify("test", strategy)
-        assert verdict.model_used == "qwen3.7-plus"
+        assert verdict.model_used == "mock-judge-model"
 
 
 class TestEngineEmptyTools:
