@@ -20,7 +20,7 @@ class TestGetProvider:
         assert hasattr(provider, "complete_with_tools")
 
     def test_get_provider_with_model(self) -> None:
-        """get_provider(model=\"gpt-4\") returns a provider with assigned model."""
+        """get_provider(model="gpt-4") returns a provider with assigned model."""
         provider = get_provider(model="gpt-4")
         assert provider.model == "gpt-4"
 
@@ -54,19 +54,22 @@ class TestFallbackProvider:
     """Validates that _build_fallback_provider handles all supported types."""
 
     def test_qwen_provider_type(self) -> None:
-        """Provider type \"""
-qwen\""" resolves without error."""
+        """Provider type `qwen` resolves without error."""
+        os.environ.setdefault("DASHSCOPE_API_KEY", "dummy")
         provider = get_provider(provider="qwen")
         assert hasattr(provider, "model")
         assert hasattr(provider, "base_url")
 
     def test_openai_provider_type(self) -> None:
-        """Provider type \"""
-openai\""" resolves without error."""
+        """Provider type `openai` resolves without error."""
         # Skip if no API key — the fallback will raise
         if not os.environ.get("OPENAI_API_KEY"):
             import pytest
+
             pytest.skip("OPENAI_API_KEY not set")
         provider = get_provider(provider="openai")
         assert hasattr(provider, "model")
         assert hasattr(provider, "base_url")
+        assert hasattr(provider, "complete")
+        assert hasattr(provider, "complete_structured")
+        assert hasattr(provider, "complete_with_tools")
