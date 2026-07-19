@@ -20,7 +20,13 @@ class TestCLIBasic:
     def test_no_args_fails(self) -> None:
         result = runner.invoke(app, [])
         assert result.exit_code != 0
-        assert "Error" in result.output or "Missing" in result.output
+        assert "Error" in result.output or "empty" in result.output.lower()
+
+    def test_stdin_input(self) -> None:
+        result = runner.invoke(app, [], input="The sky is blue")
+        # Will fail because no real provider, but CLI should parse args
+        assert result.exit_code == 1
+        assert "Unknown strategy" not in result.output
 
 
 class TestCLIStrategy:

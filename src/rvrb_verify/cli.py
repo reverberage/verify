@@ -18,7 +18,10 @@ app = typer.Typer(
 
 @app.command()
 def verify_command(
-    claim_text: str = typer.Argument(..., help="The claim to verify."),
+    claim_text: str | None = typer.Argument(
+        None,
+        help="The claim to verify. Reads from stdin if omitted.",
+    ),
     strategy: str = typer.Option(
         "fact-check",
         "--strategy",
@@ -42,6 +45,18 @@ def verify_command(
     ),
 ) -> None:
     """Verify a claim using LLM-powered analysis."""
+    if claim_text is None:
+        if sys.stdin.isatty():
+            _print_error(
+                "No claim text provided. Either pass a claim as an argument or pipe text to stdin."
+            )
+            raise typer.Exit(code=1)
+        claim_text = sys.stdin.read().strip()
+
+    if not claim_text:
+        _print_error("Claim text is empty.")
+        raise typer.Exit(code=1)
+
     try:
         verdict = verify(
             claim_text,
