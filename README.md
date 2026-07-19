@@ -10,7 +10,7 @@ Part of the [reverberage](https://github.com/reverberage) ecosystem — composab
 pip install rvrb-verify
 ```
 
-Requires `DASHSCOPE_API_KEY` env var (or install `n3rverberage` for multi-provider support).
+Set `DASHSCOPE_API_KEY` (Qwen), `OPENAI_API_KEY` (OpenAI), or use `--provider local` for Ollama/vLLM.
 
 ## Use
 
