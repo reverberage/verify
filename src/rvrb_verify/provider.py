@@ -32,17 +32,17 @@ class ModelProvider(Protocol):
     model: str
     base_url: str
 
-    def complete(self, messages: list[dict], **kwargs: Any) -> str: ...
+    def complete(self, messages: list[dict[str, Any]], **kwargs: Any) -> str: ...
     def complete_structured(
         self,
-        messages: list[dict],
+        messages: list[dict[str, Any]],
         output_type: type[BaseModel],
         **kwargs: Any,
     ) -> BaseModel: ...
     def complete_with_tools(
         self,
-        messages: list[dict],
-        tools: list[dict],
+        messages: list[dict[str, Any]],
+        tools: list[dict[str, Any]],
         **kwargs: Any,
     ) -> ToolResult: ...
 
@@ -116,7 +116,7 @@ def get_provider(
     try:
         from n3rverberage.providers import get_provider as n3rv_get_provider
 
-        return n3rv_get_provider(name=f"{resolved_provider}:{resolved_model}")
+        return n3rv_get_provider(name=f"{resolved_provider}:{resolved_model}")  # type: ignore[no-any-return]
     except ImportError:
         pass
 
@@ -179,12 +179,12 @@ class _GenericProvider:
         self.base_url = base_url
         self._api_key = api_key
 
-    def _client(self):
+    def _client(self) -> Any:
         from openai import OpenAI
 
         return OpenAI(api_key=self._api_key, base_url=self.base_url, timeout=60.0)
 
-    def complete(self, messages: list[dict], **kwargs: Any) -> str:
+    def complete(self, messages: list[dict[str, Any]], **kwargs: Any) -> str:
         max_tokens = kwargs.pop("max_tokens", 4096)
         try:
             response = self._client().chat.completions.create(
@@ -199,7 +199,7 @@ class _GenericProvider:
 
     def complete_structured(
         self,
-        messages: list[dict],
+        messages: list[dict[str, Any]],
         output_type: type[BaseModel],
         **kwargs: Any,
     ) -> BaseModel:
@@ -236,8 +236,8 @@ class _GenericProvider:
 
     def complete_with_tools(
         self,
-        messages: list[dict],
-        tools: list[dict],
+        messages: list[dict[str, Any]],
+        tools: list[dict[str, Any]],
         **kwargs: Any,
     ) -> ToolResult:
         max_tokens = kwargs.pop("max_tokens", 4096)
@@ -277,7 +277,7 @@ def _safe_parse_args(raw: str | None) -> dict[str, Any]:
     if not raw:
         return {}
     try:
-        return json.loads(raw)
+        return json.loads(raw)  # type: ignore[no-any-return]
     except json.JSONDecodeError:
         return {}
 

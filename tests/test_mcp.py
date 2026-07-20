@@ -24,7 +24,7 @@ class TestMCPVerificationFunctions:
         server = mcp._build_server()
         if mcp.HAS_MCP:
             assert server is not None
-            assert hasattr(server, "tools")
+            assert hasattr(server, "_tool_manager")
         else:
             assert server is None
 
@@ -33,6 +33,6 @@ class TestMCPVerificationFunctions:
             pytest.skip("mcp package not installed")
         server = mcp._build_server()
         assert server is not None
-        tool_names = [t.name for t in server.tools]
+        tool_names = list(server._tool_manager._tools.keys())
         assert "_verify_claim_tool" in tool_names
         assert "_list_strategies_tool" in tool_names
