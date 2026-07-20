@@ -19,19 +19,19 @@ class ModelProvider(Protocol):
 
     def complete_with_tools(
         self,
-        messages: list[dict],
-        tools: list[dict],
+        messages: list[dict[str, Any]],
+        tools: list[dict[str, Any]],
         **kwargs: Any,
     ) -> ToolResult: ...
 
     def complete_structured(
         self,
-        messages: list[dict],
+        messages: list[dict[str, Any]],
         output_type: type,
         **kwargs: Any,
     ) -> object: ...
 
-    def complete(self, messages: list[dict], **kwargs: Any) -> str: ...
+    def complete(self, messages: list[dict[str, Any]], **kwargs: Any) -> str: ...
 
 
 class VerificationError(RuntimeError):

@@ -4,6 +4,7 @@ from __future__ import annotations
 
 from datetime import UTC, datetime
 from enum import StrEnum
+from typing import Any
 
 from pydantic import BaseModel, Field, field_validator
 
@@ -78,7 +79,7 @@ class ToolCall(BaseModel):
 
     id: str
     name: str
-    arguments: dict = Field(default_factory=dict)
+    arguments: dict[str, Any] = Field(default_factory=dict)
 
 
 class ToolResult(BaseModel):
@@ -102,7 +103,7 @@ class ProviderError(RuntimeError):
         self.body = body
         super().__init__(f"[{model_id}] HTTP {status_code}: {body or 'unknown error'}")
 
-    def __reduce__(self) -> tuple:
+    def __reduce__(self) -> tuple[Any, ...]:
         return (type(self), (self.model_id, self.status_code, self.body))
 
 
